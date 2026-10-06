@@ -550,45 +550,74 @@
         </div>
     </footer>
 
-    <!-- Contentful Browser SDK & Auto Fetch Script -->
-    <script src="https://cdn.jsdelivr.net/npm/contentful@latest/dist/contentful.browser.min.js"></script>
-    <script>
-      const client = contentful.createClient({
-        space: 'pha3dwft82ap',
-        accessToken: 'aO0nEOOAsomaHi6ZowSwvpwXhDBHvPkK69zJe6mbobQ'
-      });
+   <!-- Contentful Browser SDK & Auto Fetch Script (Tối ưu Rich Text & Ảnh) -->
+<script src="https://cdn.jsdelivr.net/npm/contentful@latest/dist/contentful.browser.min.js"></script>
+<script>
+  const client = contentful.createClient({
+    space: 'pha3dwft82ap',
+    accessToken: 'aO0nEOOAsomaHi6ZowSwvpwXhDBHvPkK69zJe6mbobQ'
+  });
 
-      client.getEntries()
-        .then((response) => {
-          const container = document.getElementById('blog-posts-container');
-          if (!container) return;
+  // Hàm chuyển đổi dữ liệu Rich Text của Contentful thành văn bản thuần
+  function extractPlainText(node) {
+    if (!node) return '';
+    if (typeof node === 'string') return node;
+    if (node.nodeType === 'text') return node.value || '';
+    if (node.content && Array.isArray(node.content)) {
+      return node.content.map(extractPlainText).join(' ');
+    }
+    return '';
+  }
 
-          if (response.items.length === 0) {
-            container.innerHTML = '<p style="text-align: center; grid-column: 1/-1; color: var(--gray-color);">Chưa có bài viết nào được xuất bản trên Contentful.</p>';
-            return;
-          }
+  client.getEntries()
+    .then((response) => {
+      const container = document.getElementById('blog-posts-container');
+      if (!container) return;
 
-          container.innerHTML = response.items.map(item => {
-            const title = item.fields.tieuDe || item.fields.title || 'Bài viết mới';
-            const body = item.fields.noiDung || item.fields.content || item.fields.body || '';
-            const imageField = item.fields.hinhAnh || item.fields.image || item.fields.thumbnail;
-            const imageUrl = imageField?.fields?.file?.url ? 'https:' + imageField.fields.file.url : '';
+      if (!response.items || response.items.length === 0) {
+        container.innerHTML = '<p style="text-align: center; grid-column: 1/-1; color: var(--gray-color);">Chưa có bài viết nào được xuất bản trên Contentful.</p>';
+        return;
+      }
 
-            return `
-              <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
-                ${imageUrl ? `<img src="${imageUrl}" alt="${title}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 6px; margin-bottom: 1rem;">` : ''}
-                <div>
-                  <h3 style="color: var(--primary-color); font-size: 1.2rem; margin-bottom: 0.5rem;">${title}</h3>
-                  <p style="font-size: 0.95rem; color: var(--gray-color);">${typeof body === 'string' ? body.substring(0, 150) : 'Chi tiết bài viết...'}...</p>
-                </div>
-              </div>
-            `;
-          }).join('');
-        })
-        .catch((err) => {
-          console.error(err);
-          document.getElementById('blog-posts-container').innerHTML = '<p style="text-align: center; grid-column: 1/-1; color: red;">Không thể tải bài viết. Vui lòng kiểm tra lại trạng thái bài viết trên Contentful.</p>';
-        });
-    </script>
+      container.innerHTML = response.items.map(item => {
+        const fields = item.fields || {};
+
+        // 1. Lấy Tiêu đề (Quét qua các tên trường phổ biến)
+        const title = fields.tieuDe || fields.title || fields.name || 'Bài viết mới';
+
+        // 2. Lấy & Xử lý Mô tả ngắn từ Nội dung Rich Text
+        let rawBody = fields.noiDung || fields.content || fields.body || fields.description || '';
+        let plainText = extractPlainText(rawBody).trim();
+        let shortDescription = plainText.length > 140 ? plainText.substring(0, 140) + '...' : (plainText || 'Xem chi tiết bài viết...');
+
+        // 3. Trích xuất URL Hình ảnh đại diện
+        const imageField = fields.hinhAnh || fields.image || fields.thumbnail || fields.anhDaiDien;
+        let imageUrl = '';
+        if (imageField?.fields?.file?.url) {
+          imageUrl = imageField.fields.file.url;
+        } else if (imageField?.sys?.id) {
+          // Trường hợp link asset trực tiếp
+          imageUrl = '';
+        }
+        if (imageUrl && !imageUrl.startsWith('http')) {
+          imageUrl = 'https:' + imageUrl;
+        }
+
+        return `
+          <div class="card" style="display: flex; flex-direction: column; justify-content: space-between; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; padding: 1.2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+            <div>
+              ${imageUrl ? `<img src="${imageUrl}" alt="${title}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 6px; margin-bottom: 1rem;">` : ''}
+              <h3 style="color: var(--primary-color); font-size: 1.15rem; margin-bottom: 0.6rem; line-height: 1.4;">${title}</h3>
+              <p style="font-size: 0.92rem; color: #475569; line-height: 1.5;">${shortDescription}</p>
+            </div>
+          </div>
+        `;
+      }).join('');
+    })
+    .catch((err) => {
+      console.error('Lỗi Contentful:', err);
+      document.getElementById('blog-posts-container').innerHTML = '<p style="text-align: center; grid-column: 1/-1; color: red;">Không thể tải bài viết. Vui lòng kiểm tra lại trạng thái bài viết trên Contentful.</p>';
+    });
+</script>
 </body>
 </html>
