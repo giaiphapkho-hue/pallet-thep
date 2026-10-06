@@ -7,6 +7,10 @@
     <meta name="description" content="Chuyên sản xuất và cung cấp Pallet thép công nghiệp mạ kẽm, sơn tĩnh điện tải trọng cao từ 1000kg đến 6000kg, tối ưu không gian lưu trữ cho kho hàng B2B.">
     <link rel="canonical" href="https://giaiphapkho-hue.github.io/pallet-thep/" />
 
+    <!-- SwiperJS CSS & JS cho Article Slider -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
     <!-- Open Graph Meta Tags (SEO / Social Sharing) -->
     <meta property="og:title" content="Pallet Thép Công Nghiệp Cao Cấp - Cơ khí Hòa Long" />
     <meta property="og:description" content="Giải pháp pallet thép mạ kẽm, sơn tĩnh điện tải trọng cao, tối ưu chi phí vận hành kho hàng B2B." />
@@ -455,16 +459,30 @@
             </table>
         </section>
 
-        <!-- Khung hiển thị Bài viết & Tin tức tự động từ Contentful -->
+        <!-- Section Bài viết dạng Slider SwiperJS & Click xem chi tiết -->
         <section id="news" style="margin-top: 4rem;">
             <div class="section-title">
                 <h2>Bài Viết & Tin Tức Mới Nhất</h2>
                 <p>Cập nhật thông tin kỹ thuật và giải pháp lưu trữ kho hàng B2B</p>
             </div>
-            <div id="blog-posts-container" class="grid-3">
-                <p style="text-align: center; grid-column: 1/-1;">Đang tải bài viết từ Contentful...</p>
+            
+            <div class="swiper news-swiper" style="padding: 10px 5px 45px 5px; position: relative;">
+                <div class="swiper-wrapper" id="blog-posts-container">
+                    <p style="text-align: center; width: 100%;">Đang tải bài viết từ Contentful...</p>
+                </div>
+                <div class="swiper-pagination"></div>
+                <div class="swiper-button-next" style="color: var(--primary-color);"></div>
+                <div class="swiper-button-prev" style="color: var(--primary-color);"></div>
             </div>
         </section>
+
+        <!-- Modal Popup hiển thị nội dung chi tiết bài viết khi click -->
+        <div id="article-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 10000; justify-content: center; align-items: center; padding: 1rem;">
+            <div style="background: #fff; width: 100%; max-width: 700px; max-height: 85vh; overflow-y: auto; border-radius: 10px; padding: 2rem; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.3);">
+                <button onclick="closeModal()" style="position: absolute; top: 15px; right: 20px; border: none; background: transparent; font-size: 1.8rem; cursor: pointer; color: #64748b;">&times;</button>
+                <div id="modal-content"></div>
+            </div>
+        </div>
 
         <!-- Mục FAQ Hỏi Đáp (Tối ưu GEO / AI Search) -->
         <section id="faq" style="margin-top: 4rem;">
@@ -492,7 +510,6 @@
                 <p>Điền thông tin bên dưới, kỹ sư của Cơ khí Hòa Long sẽ liên hệ lại ngay trong 15 phút</p>
             </div>
             
-            <!-- Tích hợp gửi email giaiphapkho@gmail.com qua FormSubmit -->
             <form class="lead-form" action="https://formsubmit.co/giaiphapkho@gmail.com" method="POST">
                 <input type="hidden" name="_subject" value="[Pallet Thép] Yêu cầu báo giá mới từ Landing Page!">
                 <input type="hidden" name="_captcha" value="false">
@@ -550,41 +567,30 @@
         </div>
     </footer>
 
-   <!-- Contentful Browser SDK & Standardized Fetch Script -->
-<script src="https://cdn.jsdelivr.net/npm/contentful@latest/dist/contentful.browser.min.js"></script>
-<script>
-  const client = contentful.createClient({
-    space: 'pha3dwft82ap',
-    accessToken: 'aO0nEOOAsomaHi6ZowSwvpwXhDBHvPkK69zJe6mbobQ'
-  });
+    <!-- Contentful Browser SDK & Swiper Slider Script -->
+    <script src="https://cdn.jsdelivr.net/npm/contentful@latest/dist/contentful.browser.min.js"></script>
+    <script>
+      const client = contentful.createClient({
+        space: 'pha3dwft82ap',
+        accessToken: 'aO0nEOOAsomaHi6ZowSwvpwXhDBHvPkK69zJe6mbobQ'
+      });
 
-  // Hàm trích xuất văn bản từ Rich Text
-  function parseContent(node) {
-    if (!node) return '';
-    if (typeof node === 'string') return node;
-    if (node.nodeType === 'text') return node.value || '';
-    if (Array.isArray(node)) return node.map(parseContent).join(' ');
-    if (node.content && Array.isArray(node.content)) return parseContent(node.content);
-    return '';
-  }
+      let articlesData = [];
 
-  // Gọi API với include: 2 để tự động lấy kèm thông tin chi tiết của Hình Ảnh (Assets)
-  client.getEntries({ include: 2 })
-    .then((response) => {
-      const container = document.getElementById('blog-posts-container');
-      if (!container) return;
-
-      console.log("=== API Response ===", response);
-
-      if (!response.items || response.items.length === 0) {
-        container.innerHTML = '<p style="text-align: center; grid-column: 1/-1; color: var(--gray-color);">Chưa có bài viết nào được xuất bản.</p>';
-        return;
+      function parseContent(node) {
+        if (!node) return '';
+        if (typeof node === 'string') return node;
+        if (node.nodeType === 'text') return node.value || '';
+        if (Array.isArray(node)) return node.map(parseContent).join(' ');
+        if (node.content && Array.isArray(node.content)) return parseContent(node.content);
+        return '';
       }
 
-      container.innerHTML = response.items.map((item, idx) => {
-        const fields = item.fields || {};
+      function openArticleModal(index) {
+        const item = articlesData[index];
+        if (!item) return;
 
-        // 1. Lấy tiêu đề (Quét qua tất cả keys nếu chưa khớp)
+        const fields = item.fields || {};
         let title = '';
         for (const key in fields) {
           if (typeof fields[key] === 'string' && fields[key].length < 150) {
@@ -592,42 +598,103 @@
             break;
           }
         }
-        if (!title) title = fields.tieuDe || fields.title || fields.name || `Bài viết ${idx + 1}`;
+        if (!title) title = fields.tieuDe || fields.title || 'Chi Tiết Bài Viết';
 
-        // 2. Lấy & xử lý mô tả ngắn
-        let rawDesc = fields.noiDung || fields.content || fields.description || fields.summary || '';
+        let rawDesc = fields.noiDung || fields.content || fields.description || '';
         let plainText = parseContent(rawDesc).trim();
-        let shortDesc = plainText.length > 130 ? plainText.substring(0, 130) + '...' : (plainText || 'Bấm để xem chi tiết bài viết...');
 
-        // 3. Trích xuất URL hình ảnh (Hỗ trợ Asset Linked)
         let imgUrl = '';
         for (const key in fields) {
           const val = fields[key];
-          if (val && typeof val === 'object') {
-            if (val.fields?.file?.url) {
-              imgUrl = val.fields.file.url;
-              break;
-            }
+          if (val && typeof val === 'object' && val.fields?.file?.url) {
+            imgUrl = val.fields.file.url;
+            break;
           }
         }
-        if (imgUrl && !imgUrl.startsWith('http')) {
-          imgUrl = 'https:' + imgUrl;
-        }
+        if (imgUrl && !imgUrl.startsWith('http')) imgUrl = 'https:' + imgUrl;
 
-        return `
-          <div class="card" style="display: flex; flex-direction: column; justify-content: space-between; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; padding: 1.2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-            <div>
-              ${imgUrl ? `<img src="${imgUrl}" alt="${title}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 6px; margin-bottom: 1rem;">` : ''}
-              <h3 style="color: var(--primary-color); font-size: 1.15rem; margin-bottom: 0.6rem; line-height: 1.4;">${title}</h3>
-              <p style="font-size: 0.92rem; color: #475569; line-height: 1.5;">${shortDesc}</p>
-            </div>
-          </div>
+        const modalBody = document.getElementById('modal-content');
+        modalBody.innerHTML = `
+          ${imgUrl ? `<img src="${imgUrl}" alt="${title}" style="width: 100%; max-height: 300px; object-fit: cover; border-radius: 8px; margin-bottom: 1.2rem;">` : ''}
+          <h2 style="color: var(--primary-color); margin-bottom: 1rem; font-size: 1.4rem;">${title}</h2>
+          <div style="font-size: 1rem; color: #334155; line-height: 1.7; white-space: pre-line;">${plainText}</div>
         `;
-      }).join('');
-    })
-    .catch((err) => {
-      console.error('Lỗi Contentful:', err);
-    });
-</script>
+
+        document.getElementById('article-modal').style.display = 'flex';
+      }
+
+      function closeModal() {
+        document.getElementById('article-modal').style.display = 'none';
+      }
+
+      client.getEntries({ include: 2 })
+        .then((response) => {
+          const container = document.getElementById('blog-posts-container');
+          if (!container) return;
+
+          if (!response.items || response.items.length === 0) {
+            container.innerHTML = '<p style="text-align: center; width: 100%;">Chưa có bài viết nào được xuất bản.</p>';
+            return;
+          }
+
+          articlesData = response.items;
+
+          container.innerHTML = response.items.map((item, idx) => {
+            const fields = item.fields || {};
+
+            let title = '';
+            for (const key in fields) {
+              if (typeof fields[key] === 'string' && fields[key].length < 150) {
+                title = fields[key];
+                break;
+              }
+            }
+            if (!title) title = fields.tieuDe || fields.title || `Bài viết ${idx + 1}`;
+
+            let rawDesc = fields.noiDung || fields.content || fields.description || '';
+            let plainText = parseContent(rawDesc).trim();
+            let shortDesc = plainText.length > 100 ? plainText.substring(0, 100) + '...' : (plainText || 'Bấm để xem chi tiết bài viết...');
+
+            let imgUrl = '';
+            for (const key in fields) {
+              const val = fields[key];
+              if (val && typeof val === 'object' && val.fields?.file?.url) {
+                imgUrl = val.fields.file.url;
+                break;
+              }
+            }
+            if (imgUrl && !imgUrl.startsWith('http')) imgUrl = 'https:' + imgUrl;
+
+            return `
+              <div class="swiper-slide" onclick="openArticleModal(${idx})" style="cursor: pointer; height: auto;">
+                <div class="card" style="display: flex; flex-direction: column; justify-content: space-between; height: 100%; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; padding: 1.2rem; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: transform 0.3s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                  <div>
+                    ${imgUrl ? `<img src="${imgUrl}" alt="${title}" style="width: 100%; height: 180px; object-fit: cover; border-radius: 6px; margin-bottom: 1rem;">` : ''}
+                    <h3 style="color: var(--primary-color); font-size: 1.1rem; margin-bottom: 0.6rem; line-height: 1.4;">${title}</h3>
+                    <p style="font-size: 0.9rem; color: #64748b; line-height: 1.5;">${shortDesc}</p>
+                  </div>
+                  <span style="color: var(--secondary-color); font-weight: 500; font-size: 0.88rem; margin-top: 1rem; display: inline-block;">Đọc tiếp <i class="fa-solid fa-arrow-right"></i></span>
+                </div>
+              </div>
+            `;
+          }).join('');
+
+          // Khởi tạo Swiper
+          new Swiper('.news-swiper', {
+            slidesPerView: 1,
+            spaceBetween: 20,
+            loop: false,
+            pagination: { el: '.swiper-pagination', clickable: true },
+            navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+            breakpoints: {
+              640: { slidesPerView: 2 },
+              1024: { slidesPerView: 3 }
+            }
+          });
+        })
+        .catch((err) => {
+          console.error('Lỗi Contentful:', err);
+        });
+    </script>
 </body>
 </html>
