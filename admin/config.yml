@@ -1,0 +1,20 @@
+backend:
+  name: github
+  repo: giaiphapkho-hue/pallet-thep
+  branch: main
+
+media_folder: "images/uploads"
+public_folder: "/images/uploads"
+
+collections:
+  - name: "blog"
+    label: "Bài viết / Content"
+    folder: "posts"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - {label: "Tiêu đề bài viết", name: "title", widget: "string"}
+      - {label: "Ngày đăng", name: "date", widget: "datetime"}
+      - {label: "Hình ảnh đại diện", name: "thumbnail", widget: "image"}
+      - {label: "Mô tả ngắn (SEO)", name: "description", widget: "text"}
+      - {label: "Nội dung bài viết", name: "body", widget: "markdown"}
