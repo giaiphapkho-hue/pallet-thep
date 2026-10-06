@@ -1,6 +1,5 @@
 backend:
-  name: github
-  repo: giaiphapkho-hue/pallet-thep
+  name: git-gateway
   branch: main
 
 media_folder: "images/uploads"
