@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pallet Thép Công Nghiệp Cao Cấp - Cơ Khí Hòa Long</title>
+    <meta name="description" content="Chuyên sản xuất và cung cấp Pallet thép công nghiệp mạ kẽm, sơn tĩnh điện tải trọng cao, tối ưu không gian lưu trữ cho kho hàng B2B.">
+    <!-- Google Fonts & Font Awesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #0d47a1;
+            --secondary-color: #ff6f00;
+            --dark-color: #1e293b;
+            --light-color: #f8fafc;
+            --gray-color: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            color: var(--dark-color);
+            background-color: #ffffff;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        header {
+            background-color: #ffffff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark-color);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(13, 71, 161, 0.85), rgba(15, 23, 42, 0.85)), url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=1350&q=80') center/cover no-repeat;
+            color: #ffffff;
+            padding: 5rem 2rem;
+            text-align: center;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--secondary-color);
+            color: #ffffff;
+            padding: 0.8rem 2rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #e66000;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title h2 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Features / Advantages */
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: var(--light-color);
+            padding: 2rem;
+            border-radius: 8px;
+            border-top: 4px solid var(--primary-color);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .card i {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .card h3 {
+            margin-bottom: 0.8rem;
+        }
+
+        /* Product Overview & Backlink */
+        .about-product {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 2.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-top: 3rem;
+        }
+
+        .backlink-box {
+            background-color: #eff6ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.2rem;
+            margin-top: 1.5rem;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .backlink-box a {
+            color: var(--primary-color);
+            font-weight: 700;
+            text-decoration: underline;
+        }
+
+        /* Specifications Table */
+        .spec-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 2rem;
+        }
+
+        .spec-table th, .spec-table td {
+            border: 1px solid #e2e8f0;
+            padding: 1rem;
+            text-align: left;
+        }
+
+        .spec-table th {
+            background-color: var(--primary-color);
+            color: #ffffff;
+        }
+
+        .spec-table tr:nth-child(even) {
+            background-color: var(--light-color);
+        }
+
+        /* Form Section */
+        .form-section {
+            background: var(--light-color);
+            border-radius: 10px;
+            padding: 3rem 2rem;
+            margin-top: 4rem;
+        }
+
+        .lead-form {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            padding: 0.8rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        /* Floating Quick Contact */
+        .floating-contact {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 9999;
+        }
+
+        .contact-btn {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #ffffff;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            text-decoration: none;
+            transition: transform 0.3s;
+        }
+
+        .contact-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .btn-zalo { background-color: #0088ff; }
+        .btn-phone { background-color: #22c55e; }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark-color);
+            color: #ffffff;
+            padding: 3rem 2rem 1.5rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid #334155;
+            color: var(--gray-color);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .hero h1 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <nav class="navbar">
+            <a href="#" class="logo">HÒA LONG MECHANICAL</a>
+            <ul class="nav-links">
+                <li><a href="#about">Ưu Điểm</a></li>
+                <li><a href="#specs">Thông Số Kỹ Thuật</a></li>
+                <li><a href="#quote">Đăng Ký Tư Vấn</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>SẢN XUẤT PALLET THÉP CÔNG NGHIỆP TẢI TRỌNG CAO</h1>
+            <p>Giải pháp lưu trữ bền bỉ, an toàn tuyệt đối và tối ưu không gian nhà kho B2B chuyên nghiệp</p>
+            <a href="#quote" class="btn">NHẬN BÁO GIÁ TẠI XƯỞNG</a>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Ưu điểm sản phẩm -->
+        <section id="about">
+            <div class="section-title">
+                <h2>Tại Sao Nên Chọn Pallet Thép Hòa Long?</h2>
+                <p>Thiết kế đáp ứng tiêu chuẩn vận hành thực tế của mọi dòng hệ thống kệ chứa hàng</p>
+            </div>
+            <div class="grid-3">
+                <div class="card">
+                    <i class="fa-solid fa-weight-hanging"></i>
+                    <h3>Tải Trọng Vượt Trội</h3>
+                    <p>Khả năng chịu tải động từ 1.000kg - 3.000kg và tải tĩnh lên đến 6.000kg, chống cong vênh tối đa.</p>
+                </div>
+                <div class="card">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <h3>Độ Bền Cao & Chống Gỉ</h3>
+                    <p>Bề mặt xử lý mạ kẽm nhúng nóng hoặc sơn tĩnh điện cao cấp, chống ăn mòn hiệu quả trong mọi môi trường kho mát/kho lạnh.</p>
+                </div>
+                <div class="card">
+                    <i class="fa-solid fa-fire-extinguisher"></i>
+                    <h3>An Toàn PCCC & Vệ Sinh</h3>
+                    <p>Không lo mối mọt hay cháy nổ như pallet gỗ, dễ dàng vệ sinh sạch sẽ, đáp ứng tiêu chuẩn kho vận thực phẩm, dược phẩm.</p>
+                </div>
+            </div>
+
+            <!-- Giới thiệu sản phẩm & Backlink SEO -->
+            <div class="about-product">
+                <h3>Giải Pháp Tối Ưu Cho Kho Hàng Hiện Đại</h3>
+                <p style="margin-top: 0.8rem;">
+                    Pallet thép do <strong>Cơ Khí Hòa Long</strong> chế tạo trực tiếp tại xưởng với quy trình kiểm soát chất lượng nghiêm ngặt, đảm bảo khớp chính xác với các hệ thống kệ chứa hàng như Selective, Drive-In, VNA hay Radio Shuttle.
+                </p>
+                <div class="backlink-box">
+                    📌 <strong>Tham khảo đầy đủ quy cách và danh mục sản phẩm:</strong>  
+                    Truy cập ngay <a href="https://hoalongcorp.com/pallet-thep/" target="_blank" rel="noopener">Trang Sản Phẩm Pallet Thép Chính Thức - Hoalongcorp.com</a> để xem báo giá chi tiết và catalogue mới nhất.
+                </div>
+            </div>
+        </section>
+
+        <!-- Bảng thông số -->
+        <section id="specs" style="margin-top: 4rem;">
+            <div class="section-title">
+                <h2>Thông Số Kỹ Thuật Tiêu Chuẩn</h2>
+            </div>
+            <table class="spec-table">
+                <thead>
+                    <tr>
+                        <th>Hạng Mục</th>
+                        <th>Thông Số Chi Tiết</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Kích thước phổ biến (D x R x C)</strong></td>
+                        <td>1200 x 1000 x 150 mm | 1100 x 1100 x 150 mm (Hoặc gia công theo yêu cầu)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tải trọng nâng (Động)</strong></td>
+                        <td>1,000 kg - 2,500 kg</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tải trọng lưu trữ (Tĩnh)</strong></td>
+                        <td>2,000 kg - 6,000 kg</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Xử lý bề mặt</strong></td>
+                        <td>Mạ kẽm nhúng nóng / Mạ kẽm điện phân / Sơn tĩnh điện cao cấp</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Hướng nâng</strong></td>
+                        <td>2 hướng nâng hoặc 4 hướng nâng (phù hợp xe nâng tay & xe nâng máy)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Form đăng ký -->
+        <section id="quote" class="form-section">
+            <div class="section-title">
+                <h2>Yêu Cầu Tư Vấn & Nhận Báo Giá Chi Tiết</h2>
+                <p>Điền thông tin bên dưới, kỹ sư của Hòa Long sẽ liên hệ lại ngay trong 15 phút</p>
+            </div>
+            <form class="lead-form" action="#" method="POST" onsubmit="alert('Cảm ơn bạn đã gửi thông tin! Chúng tôi sẽ liên hệ lại sớm nhất.'); return false;">
+                <div class="form-group">
+                    <label for="fullname">Họ và Tên *</label>
+                    <input type="text" id="fullname" name="fullname" placeholder="Nguyễn Văn A" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Số Điện Thoại / Zalo *</label>
+                    <input type="tel" id="phone" name="phone" placeholder="0901234567" required>
+                </div>
+                <div class="form-group">
+                    <label for="company">Tên Công Ty / Kho Hàng</label>
+                    <input type="text" id="company" name="company" placeholder="Công ty ABC...">
+                </div>
+                <div class="form-group">
+                    <label for="requirement">Yêu Cầu Kỹ Thuật / Số Lượng Dự Kiến</label>
+                    <textarea id="requirement" name="requirement" rows="4" placeholder="Ví dụ: Cần 200 pallet thép mạ kẽm kích thước 1200x1000, tải trọng 1.5 tấn..."></textarea>
+                </div>
+                <button type="submit" class="btn" style="width: 100%;">GỬI YÊU CẦU BÁO GIÁ</button>
+            </form>
+        </section>
+    </div>
+
+    <!-- Nút liên hệ nhanh -->
+    <div class="floating-contact">
+        <a href="https://zalo.me" target="_blank" class="contact-btn btn-zalo" title="Chat Zalo">
+            <i class="fa-regular fa-comment-dots"></i>
+        </a>
+        <a href="tel:0900000000" class="contact-btn btn-phone" title="Gọi Điện">
+            <i class="fa-solid fa-phone"></i>
+        </a>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div>
+                <h3>CƠ KHÍ HÒA LONG</h3>
+                <p style="margin-top: 0.8rem; font-size: 0.95rem; color: #94a3b8;">
+                    Đơn vị chuyên nghiệp hàng đầu trong lĩnh vực sản xuất kệ chứa hàng công nghiệp, PEB và giải pháp Pallet thép chất lượng cao.
+                </p>
+            </div>
+            <div>
+                <h3>Liên Kết Nhanh</h3>
+                <p style="margin-top: 0.8rem;">
+                    🌐 Xem đầy đủ sản phẩm tại: <a href="https://hoalongcorp.com/pallet-thep/" style="color: #60a5fa;" target="_blank" rel="noopener">Pallet Thép Hòa Long</a>
+                </p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Hoa Long Mechanical. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
