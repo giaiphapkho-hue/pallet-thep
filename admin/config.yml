@@ -2,8 +2,7 @@ backend:
   name: github
   repo: giaiphapkho-hue/pallet-thep
   branch: main
-  base_url: https://decap-cms-oauth-provider.vercel.app
-  auth_endpoint: /api/auth
+  base_url: https://silly-cms-auth.vercel.app
 
 media_folder: "images/uploads"
 public_folder: "/images/uploads"
