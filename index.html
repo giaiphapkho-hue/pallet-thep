@@ -553,5 +553,37 @@
         });
       }
     </script>
+<!-- Contentful SDK -->
+<script src="https://cdn.jsdelivr.net/npm/contentful@latest/dist/contentful.browser.min.js"></script>
+
+<script>
+  // Khởi tạo kết nối với Contentful bằng API Key của bạn
+  const client = contentful.createClient({
+    space: 'pha3dwft82ap',
+    accessToken: 'aO0nEOOAsomaHi6ZowSwvpwXhDBHvPkK69zJe6mbobQ'
+  });
+
+  // Tự động lấy danh sách bài viết đã xuất bản (Published)
+  client.getEntries({ content_type: 'baiViet' }) // Thay 'baiViet' bằng ID Content Type của bạn nếu khác
+    .then((response) => {
+      const container = document.getElementById('blog-posts-container');
+      if (!container) return;
+
+      container.innerHTML = response.items.map(item => {
+        const title = item.fields.tieuDe || 'Bài viết mới';
+        const body = item.fields.noiDung || '';
+        const imageUrl = item.fields.hinhAnh?.fields?.file?.url ? 'https:' + item.fields.hinhAnh.fields.file.url : '';
+
+        return `
+          <div class="blog-post-card" style="margin-bottom: 2rem; border: 1px solid #e2e8f0; padding: 1.5rem; border-radius: 8px;">
+            ${imageUrl ? `<img src="${imageUrl}" alt="${title}" style="max-width: 100%; height: auto; border-radius: 6px; margin-bottom: 1rem;">` : ''}
+            <h3 style="color: #0d47a1; margin-bottom: 0.5rem;">${title}</h3>
+            <div>${body}</div>
+          </div>
+        `;
+      }).join('');
+    })
+    .catch(console.error);
+</script>    
 </body>
 </html>
