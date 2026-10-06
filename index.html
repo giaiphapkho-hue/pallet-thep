@@ -7,9 +7,18 @@
     <meta name="description" content="Chuyên sản xuất và cung cấp Pallet thép công nghiệp mạ kẽm, sơn tĩnh điện tải trọng cao từ 1000kg đến 6000kg, tối ưu không gian lưu trữ cho kho hàng B2B.">
     <link rel="canonical" href="https://giaiphapkho-hue.github.io/pallet-thep/" />
 
+    <!-- Google Fonts & Font Awesome Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <!-- SwiperJS CSS & JS cho Article Slider -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" defer></script>
+
+    <!-- Contentful Browser SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/contentful@latest/dist/contentful.browser.min.js" defer></script>
 
     <!-- Open Graph Meta Tags (SEO / Social Sharing) -->
     <meta property="og:title" content="Pallet Thép Công Nghiệp Cao Cấp - Cơ khí Hòa Long" />
@@ -38,10 +47,6 @@
       }
     }
     </script>
-
-    <!-- Google Fonts & Font Awesome Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         :root {
@@ -85,27 +90,15 @@
         }
 
         @keyframes pulseGlow {
-            0% {
-                box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6);
-            }
-            70% {
-                box-shadow: 0 0 0 15px rgba(34, 197, 94, 0);
-            }
-            100% {
-                box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
-            }
+            0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6); }
+            70% { box-shadow: 0 0 0 15px rgba(34, 197, 94, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
         }
 
         @keyframes pulseZalo {
-            0% {
-                box-shadow: 0 0 0 0 rgba(0, 136, 255, 0.6);
-            }
-            70% {
-                box-shadow: 0 0 0 15px rgba(0, 136, 255, 0);
-            }
-            100% {
-                box-shadow: 0 0 0 0 rgba(0, 136, 255, 0);
-            }
+            0% { box-shadow: 0 0 0 0 rgba(0, 136, 255, 0.6); }
+            70% { box-shadow: 0 0 0 15px rgba(0, 136, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 136, 255, 0); }
         }
 
         .reveal-on-scroll {
@@ -396,7 +389,7 @@
             background-color: #f1f5f9;
         }
 
-        /* FAQ Section (GEO Optimization) */
+        /* FAQ Section */
         .faq-item {
             background: var(--light-color);
             padding: 1.4rem;
@@ -498,7 +491,6 @@
             animation: pulseGlow 2s infinite;
         }
 
-        /* Modal Smooth Animation */
         #article-modal {
             transition: opacity 0.3s ease;
         }
@@ -689,12 +681,12 @@
         <!-- Modal Popup hiển thị nội dung chi tiết bài viết khi click -->
         <div id="article-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 10000; justify-content: center; align-items: center; padding: 1rem;">
             <div style="background: #fff; width: 100%; max-width: 720px; max-height: 85vh; overflow-y: auto; border-radius: 12px; padding: 2rem; position: relative; box-shadow: 0 15px 35px rgba(0,0,0,0.3); animation: fadeInUp 0.3s ease;">
-                <button onclick="closeModal()" style="position: absolute; top: 15px; right: 20px; border: none; background: transparent; font-size: 1.8rem; cursor: pointer; color: #64748b; transition: color 0.2s;" onmouseover="this.style.color='#000'" onmouseout="this.style.color='#64748b'">&times;</button>
+                <button onclick="closeModal()" aria-label="Đóng popup" style="position: absolute; top: 15px; right: 20px; border: none; background: transparent; font-size: 1.8rem; cursor: pointer; color: #64748b; transition: color 0.2s;" onmouseover="this.style.color='#000'" onmouseout="this.style.color='#64748b'">&times;</button>
                 <div id="modal-content"></div>
             </div>
         </div>
 
-        <!-- Mục FAQ Hỏi Đáp (Tối ưu GEO / AI Search) -->
+        <!-- Mục FAQ Hỏi Đáp -->
         <section id="faq" style="margin-top: 4rem;">
             <div class="section-title reveal-on-scroll">
                 <h2>Câu Hỏi Thường Gặp Về Pallet Thép</h2>
@@ -748,10 +740,10 @@
 
     <!-- Nút liên hệ nhanh (Zalo & Hotline) -->
     <div class="floating-contact">
-        <a href="https://zalo.me/0901890689" target="_blank" class="contact-btn btn-zalo" title="Chat Zalo: 0901890689">
+        <a href="https://zalo.me/0901890689" target="_blank" class="contact-btn btn-zalo" title="Chat Zalo: 0901890689" aria-label="Chat Zalo">
             <i class="fa-regular fa-comment-dots"></i>
         </a>
-        <a href="tel:0901890689" class="contact-btn btn-phone" title="Gọi Hotline: 0901890689">
+        <a href="tel:0901890689" class="contact-btn btn-phone" title="Gọi Hotline: 0901890689" aria-label="Gọi điện">
             <i class="fa-solid fa-phone"></i>
         </a>
     </div>
@@ -777,17 +769,137 @@
         </div>
     </footer>
 
-   <!-- Contentful Browser SDK & Swiper Script -->
-    <script src="https://cdn.jsdelivr.net/npm/contentful@latest/dist/contentful.browser.min.js"></script>
+    <!-- Logic Script Execution -->
     <script>
-      const client = contentful.createClient({
-        space: 'pha3dwft82ap',
-        accessToken: 'aO0nEOOAsomaHi6ZowSwvpwXhDBHvPkK69zJe6mbobQ'
-      });
-
+      let client;
       let articlesData = [];
 
-      // 1. Hàm bóc tách Rich Text & Tự động gắn Anchor ID cho H2, H3 để dựng Mục lục
+      document.addEventListener('DOMContentLoaded', () => {
+        initScrollAnimations();
+        initContentfulData();
+      });
+
+      /* 1. Scroll Animations & Trust Counter Observer */
+      function initScrollAnimations() {
+        const observerOptions = { threshold: 0.15 };
+        
+        const scrollObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('active');
+              if (entry.target.classList.contains('trust-stats')) {
+                animateCounters();
+              }
+            }
+          });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal-on-scroll').forEach(el => scrollObserver.observe(el));
+      }
+
+      function animateCounters() {
+        const counters = document.querySelectorAll('.stat-number');
+        counters.forEach(counter => {
+          if (counter.classList.contains('counted')) return;
+          counter.classList.add('counted');
+          
+          const target = +counter.getAttribute('data-target');
+          const duration = 2000;
+          const step = Math.ceil(target / (duration / 16));
+
+          let count = 0;
+          const timer = setInterval(() => {
+            count += step;
+            if (count >= target) {
+              counter.innerText = target.toLocaleString('vi-VN');
+              clearInterval(timer);
+            } else {
+              counter.innerText = count.toLocaleString('vi-VN');
+            }
+          }, 16);
+        });
+      }
+
+      /* 2. Contentful Fetch & Rich Text Rendering */
+      function initContentfulData() {
+        if (typeof contentful === 'undefined') return;
+
+        client = contentful.createClient({
+          space: 'pha3dwft82ap',
+          accessToken: 'aO0nEOOAsomaHi6ZowSwvpwXhDBHvPkK69zJe6mbobQ'
+        });
+
+        client.getEntries({ include: 10 })
+          .then((response) => {
+            const container = document.getElementById('blog-posts-container');
+            if (!container) return;
+
+            if (!response.items || response.items.length === 0) {
+              container.innerHTML = '<p style="text-align: center; width: 100%;">Chưa có bài viết nào được xuất bản.</p>';
+              return;
+            }
+
+            articlesData = response.items;
+
+            container.innerHTML = response.items.map((item, idx) => {
+              const fields = item.fields || {};
+
+              let title = fields.tieuDe || fields.title || '';
+              if (!title) {
+                for (const key in fields) {
+                  if (typeof fields[key] === 'string' && fields[key].length < 150) {
+                    title = fields[key];
+                    break;
+                  }
+                }
+              }
+              if (!title) title = `Bài viết ${idx + 1}`;
+
+              let rawDesc = fields.niDung || fields.noiDung || fields.content || fields.body || '';
+              let plainText = extractExcerpt(rawDesc).trim();
+              let shortDesc = plainText.length > 110 ? plainText.substring(0, 110) + '...' : (plainText || 'Bấm để đọc toàn bộ bài viết...');
+
+              let imgUrl = '';
+              for (const key in fields) {
+                const val = fields[key];
+                if (val && typeof val === 'object' && val.fields?.file?.url) {
+                  imgUrl = val.fields.file.url;
+                  break;
+                }
+              }
+              if (imgUrl && !imgUrl.startsWith('http')) imgUrl = 'https:' + imgUrl;
+
+              return `
+                <div class="swiper-slide" onclick="openArticleModal(${idx})" style="cursor: pointer; height: auto;">
+                  <div class="card" style="display: flex; flex-direction: column; justify-content: space-between; height: 100%; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; padding: 1.2rem; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: transform 0.3s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                    <div>
+                      ${imgUrl ? `<img src="${imgUrl}" alt="${title}" loading="lazy" style="width: 100%; height: 180px; object-fit: cover; border-radius: 6px; margin-bottom: 1rem;">` : ''}
+                      <h3 style="color: var(--primary-color); font-size: 1.1rem; margin-bottom: 0.6rem; line-height: 1.4;">${title}</h3>
+                      <p style="font-size: 0.9rem; color: #64748b; line-height: 1.5;">${shortDesc}</p>
+                    </div>
+                    <span style="color: var(--secondary-color); font-weight: 500; font-size: 0.88rem; margin-top: 1rem; display: inline-block;">Đọc tiếp <i class="fa-solid fa-arrow-right"></i></span>
+                  </div>
+                </div>
+              `;
+            }).join('');
+
+            new Swiper('.news-swiper', {
+              slidesPerView: 1,
+              spaceBetween: 20,
+              loop: false,
+              pagination: { el: '.swiper-pagination', clickable: true },
+              navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+              breakpoints: {
+                640: { slidesPerView: 2 },
+                1024: { slidesPerView: 3 }
+              }
+            });
+          })
+          .catch((err) => {
+            console.error('Lỗi tải dữ liệu Contentful:', err);
+          });
+      }
+
       function renderRichTextToHTML(node, headingList = []) {
         if (!node) return '';
         if (typeof node === 'string') return `<p style="margin-bottom: 1rem; line-height: 1.7;">${node}</p>`;
@@ -812,7 +924,6 @@
           case 'paragraph':
             return children.trim() ? `<p style="margin-bottom: 1rem; line-height: 1.7; color: #334155;">${children}</p>` : '';
           
-          /* Tự động bắt H2, H3 làm Mục Lục */
           case 'heading-2': {
             const cleanText = children.replace(/<[^>]*>?/gm, '').trim();
             const headingId = 'toc-' + Math.random().toString(36).substr(2, 7);
@@ -848,7 +959,7 @@
             if (node.data?.target?.fields?.file?.url) {
               let imgUrl = node.data.target.fields.file.url;
               if (!imgUrl.startsWith('http')) imgUrl = 'https:' + imgUrl;
-              return `<img src="${imgUrl}" style="max-width: 100%; height: auto; border-radius: 8px; margin: 1rem 0;" />`;
+              return `<img src="${imgUrl}" loading="lazy" style="max-width: 100%; height: auto; border-radius: 8px; margin: 1rem 0;" />`;
             }
             return '';
           default:
@@ -865,14 +976,13 @@
         return '';
       }
 
-      // 2. Mở Popup Chi Tiết Bài Viết
+      /* 3. Modal Popup Management */
       function openArticleModal(index) {
         const item = articlesData[index];
         if (!item) return;
 
         const fields = item.fields || {};
         
-        // Đọc chính xác trường Tiêu đề từ Contentful
         let title = fields.tieuDe || fields.title || '';
         if (!title) {
           for (const key in fields) {
@@ -899,7 +1009,6 @@
         const headings = [];
         let htmlBody = renderRichTextToHTML(rawContent, headings);
 
-        // Render khối Mục Lục tự động
         let tocHtml = '';
         if (headings.length > 0) {
           tocHtml = `
@@ -934,7 +1043,6 @@
         document.body.style.overflow = 'hidden';
       }
 
-      // 3. Đóng Popup
       function closeModal() {
         const modal = document.getElementById('article-modal');
         if (modal) {
@@ -943,91 +1051,14 @@
         }
       }
 
-      // 4. Bắt sự kiện Click ra vùng ngoài (Overlay) để đóng Popup mượt mà
-      document.addEventListener('DOMContentLoaded', function() {
-        const modal = document.getElementById('article-modal');
-        if (modal) {
-          modal.addEventListener('click', function(event) {
-            // Chỉ đóng khi click trực tiếp vào khoảng trống xung quanh (modal overlay)
-            if (event.target === modal) {
-              closeModal();
-            }
-          });
-        }
+      /* Event Listeners cho Modal Close */
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeModal();
       });
 
-      // 5. Fetch dữ liệu bài viết từ Contentful & Hiển thị Tiêu đề chính xác
-      client.getEntries({ include: 10 })
-        .then((response) => {
-          const container = document.getElementById('blog-posts-container');
-          if (!container) return;
-
-          if (!response.items || response.items.length === 0) {
-            container.innerHTML = '<p style="text-align: center; width: 100%;">Chưa có bài viết nào được xuất bản.</p>';
-            return;
-          }
-
-          articlesData = response.items;
-
-          container.innerHTML = response.items.map((item, idx) => {
-            const fields = item.fields || {};
-
-            // Đọc trường Tiêu đề thực tế từ Contentful (bỏ 'Bài viết 1, Bài viết 2...')
-            let title = fields.tieuDe || fields.title || '';
-            if (!title) {
-              for (const key in fields) {
-                if (typeof fields[key] === 'string' && fields[key].length < 150) {
-                  title = fields[key];
-                  break;
-                }
-              }
-            }
-            if (!title) title = `Bài viết ${idx + 1}`;
-
-            let rawDesc = fields.niDung || fields.noiDung || fields.content || fields.body || '';
-            let plainText = extractExcerpt(rawDesc).trim();
-            let shortDesc = plainText.length > 110 ? plainText.substring(0, 110) + '...' : (plainText || 'Bấm để đọc toàn bộ bài viết...');
-
-            let imgUrl = '';
-            for (const key in fields) {
-              const val = fields[key];
-              if (val && typeof val === 'object' && val.fields?.file?.url) {
-                imgUrl = val.fields.file.url;
-                break;
-              }
-            }
-            if (imgUrl && !imgUrl.startsWith('http')) imgUrl = 'https:' + imgUrl;
-
-            return `
-              <div class="swiper-slide" onclick="openArticleModal(${idx})" style="cursor: pointer; height: auto;">
-                <div class="card" style="display: flex; flex-direction: column; justify-content: space-between; height: 100%; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; padding: 1.2rem; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: transform 0.3s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
-                  <div>
-                    ${imgUrl ? `<img src="${imgUrl}" alt="${title}" style="width: 100%; height: 180px; object-fit: cover; border-radius: 6px; margin-bottom: 1rem;">` : ''}
-                    <h3 style="color: var(--primary-color); font-size: 1.1rem; margin-bottom: 0.6rem; line-height: 1.4;">${title}</h3>
-                    <p style="font-size: 0.9rem; color: #64748b; line-height: 1.5;">${shortDesc}</p>
-                  </div>
-                  <span style="color: var(--secondary-color); font-weight: 500; font-size: 0.88rem; margin-top: 1rem; display: inline-block;">Đọc tiếp <i class="fa-solid fa-arrow-right"></i></span>
-                </div>
-              </div>
-            `;
-          }).join('');
-
-          // Khởi tạo Swiper Slide
-          new Swiper('.news-swiper', {
-            slidesPerView: 1,
-            spaceBetween: 20,
-            loop: false,
-            pagination: { el: '.swiper-pagination', clickable: true },
-            navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
-            breakpoints: {
-              640: { slidesPerView: 2 },
-              1024: { slidesPerView: 3 }
-            }
-          });
-        })
-        .catch((err) => {
-          console.error('Lỗi tải dữ liệu Contentful:', err);
-        });
+      document.getElementById('article-modal')?.addEventListener('click', (e) => {
+        if (e.target === document.getElementById('article-modal')) closeModal();
+      });
     </script>
 </body>
 </html>
