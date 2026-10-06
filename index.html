@@ -577,19 +577,12 @@
 
       let articlesData = [];
 
-      // Hàm chuyển đổi toàn bộ Contentful Rich Text sang HTML chuẩn
+      // Hàm chuyển đổi Contentful Rich Text sang HTML chuẩn (Đầy đủ bảng, danh sách, tiêu đề)
       function renderRichTextToHTML(node) {
         if (!node) return '';
-        
-        // Nếu là văn bản chuỗi thường
-        if (typeof node === 'string') return `<p>${node}</p>`;
-        
-        // Nếu là mảng các node
-        if (Array.isArray(node)) {
-          return node.map(renderRichTextToHTML).join('');
-        }
+        if (typeof node === 'string') return `<p style="margin-bottom: 1rem; line-height: 1.7;">${node}</p>`;
+        if (Array.isArray(node)) return node.map(renderRichTextToHTML).join('');
 
-        // Xử lý node dạng Text cơ bản
         if (node.nodeType === 'text') {
           let val = node.value || '';
           if (node.marks) {
@@ -601,7 +594,6 @@
           return val;
         }
 
-        // Xử lý các loại thẻ Rich Text đặc thù từ Contentful
         const children = node.content ? node.content.map(renderRichTextToHTML).join('') : '';
 
         switch (node.nodeType) {
@@ -610,19 +602,30 @@
           case 'paragraph':
             return children.trim() ? `<p style="margin-bottom: 1rem; line-height: 1.7; color: #334155;">${children}</p>` : '';
           case 'heading-1':
-            return `<h1 style="color: #0d47a1; margin: 1.5rem 0 0.8rem; font-size: 1.6rem;">${children}</h1>`;
+            return `<h1 style="color: #0d47a1; margin: 1.5rem 0 0.8rem; font-size: 1.5rem;">${children}</h1>`;
           case 'heading-2':
-            return `<h2 style="color: #0d47a1; margin: 1.4rem 0 0.7rem; font-size: 1.35rem;">${children}</h2>`;
+            return `<h2 style="color: #0d47a1; margin: 1.4rem 0 0.7rem; font-size: 1.3rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.3rem;">${children}</h2>`;
           case 'heading-3':
-            return `<h3 style="color: #1e293b; margin: 1.2rem 0 0.5rem; font-size: 1.15rem;">${children}</h3>`;
+            return `<h3 style="color: #1e293b; margin: 1.2rem 0 0.5rem; font-size: 1.1rem;">${children}</h3>`;
           case 'unordered-list':
-            return `<ul style="margin: 1rem 0 1rem 1.5rem; color: #334155;">${children}</ul>`;
+            return `<ul style="margin: 1rem 0 1rem 1.5rem; color: #334155; list-style-type: disc;">${children}</ul>`;
           case 'ordered-list':
             return `<ol style="margin: 1rem 0 1rem 1.5rem; color: #334155;">${children}</ol>`;
           case 'list-item':
             return `<li style="margin-bottom: 0.4rem;">${children}</li>`;
           case 'blockquote':
-            return `<blockquote style="border-left: 4px solid #0d47a1; padding-left: 1rem; margin: 1rem 0; color: #64748b; font-style: italic;">${children}</blockquote>`;
+            return `<blockquote style="border-left: 4px solid #0d47a1; background: #f8fafc; padding: 0.8rem 1rem; margin: 1rem 0; color: #475569; font-style: italic;">${children}</blockquote>`;
+          
+          /* Xử lý Render Bảng (Table) từ Contentful */
+          case 'table':
+            return `<div style="overflow-x: auto; margin: 1.5rem 0;"><table style="width: 100%; border-collapse: collapse; margin-top: 0.5rem; font-size: 0.95rem;">${children}</table></div>`;
+          case 'table-row':
+            return `<tr style="border-bottom: 1px solid #e2e8f0;">${children}</tr>`;
+          case 'table-header-cell':
+            return `<th style="background-color: #0d47a1; color: #ffffff; padding: 0.75rem; text-align: left; font-weight: 600;">${children}</th>`;
+          case 'table-cell':
+            return `<td style="padding: 0.75rem; border: 1px solid #e2e8f0; color: #334155;">${children}</td>`;
+
           case 'embedded-asset-block':
             if (node.data?.target?.fields?.file?.url) {
               let imgUrl = node.data.target.fields.file.url;
@@ -635,7 +638,6 @@
         }
       }
 
-      // Lấy đoạn văn ngắn làm Tóm tắt (Excerpt)
       function extractExcerpt(node) {
         if (!node) return '';
         if (typeof node === 'string') return node;
@@ -651,7 +653,7 @@
 
         const fields = item.fields || {};
         
-        // 1. Tự động tìm Tiêu đề
+        // Lấy tiêu đề bài viết
         let title = fields.tieuDe || fields.title || '';
         if (!title) {
           for (const key in fields) {
@@ -661,9 +663,9 @@
             }
           }
         }
-        if (!title) title = 'Bài Viết Chi Tiết';
+        if (!title) title = 'Pallet kim loại – Thiết bị không thể thiếu trong vận hành hàng hóa';
 
-        // 2. Tìm Ảnh Đại Diện (Featured Image)
+        // Lấy Ảnh đại diện
         let imgUrl = '';
         for (const key in fields) {
           const val = fields[key];
@@ -674,25 +676,21 @@
         }
         if (imgUrl && !imgUrl.startsWith('http')) imgUrl = 'https:' + imgUrl;
 
-        // 3. Render Nội dung Rich Text chuẩn HTML
-        let rawContent = fields.noiDung || fields.content || fields.body || fields.description || '';
+        // ƯU TIÊN LẤY TRƯỜNG `niDung` TỪ CONTENTFUL
+        let rawContent = fields.niDung || fields.noiDung || fields.content || fields.body || fields.description || '';
         let htmlBody = renderRichTextToHTML(rawContent);
-
-        if (!htmlBody || htmlBody.trim() === '') {
-          htmlBody = '<p style="color: #64748b; font-style: italic;">Nội dung bài viết đang được cập nhật...</p>';
-        }
 
         const modalBody = document.getElementById('modal-content');
         modalBody.innerHTML = `
           ${imgUrl ? `<img src="${imgUrl}" alt="${title}" style="width: 100%; max-height: 320px; object-fit: cover; border-radius: 8px; margin-bottom: 1.5rem;">` : ''}
-          <h1 style="color: var(--primary-color); margin-bottom: 1.2rem; font-size: 1.6rem; line-height: 1.35;">${title}</h1>
+          <h1 style="color: var(--primary-color); margin-bottom: 1.2rem; font-size: 1.5rem; line-height: 1.35;">${title}</h1>
           <div style="border-top: 1px solid #e2e8f0; padding-top: 1.2rem; font-size: 1rem;">
             ${htmlBody}
           </div>
         `;
 
         document.getElementById('article-modal').style.display = 'flex';
-        document.body.style.overflow = 'hidden'; // Chống cuộn trang phía dưới
+        document.body.style.overflow = 'hidden';
       }
 
       function closeModal() {
@@ -700,8 +698,8 @@
         document.body.style.overflow = 'auto';
       }
 
-      // Gọi API Contentful
-      client.getEntries({ include: 3 })
+      // Fetch dữ liệu từ Contentful với include=10 để lấy trọn vẹn Rich Text & Assets
+      client.getEntries({ include: 10 })
         .then((response) => {
           const container = document.getElementById('blog-posts-container');
           if (!container) return;
@@ -727,7 +725,7 @@
             }
             if (!title) title = `Bài viết ${idx + 1}`;
 
-            let rawDesc = fields.noiDung || fields.content || fields.body || fields.description || '';
+            let rawDesc = fields.niDung || fields.noiDung || fields.content || fields.body || fields.description || '';
             let plainText = extractExcerpt(rawDesc).trim();
             let shortDesc = plainText.length > 110 ? plainText.substring(0, 110) + '...' : (plainText || 'Bấm để đọc toàn bộ bài viết...');
 
@@ -755,7 +753,6 @@
             `;
           }).join('');
 
-          // Re-init Swiper
           new Swiper('.news-swiper', {
             slidesPerView: 1,
             spaceBetween: 20,
