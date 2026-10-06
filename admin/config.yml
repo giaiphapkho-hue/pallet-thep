@@ -2,7 +2,8 @@ backend:
   name: github
   repo: giaiphapkho-hue/pallet-thep
   branch: main
-  site_domain: palletthep.netlify.app
+  base_url: https://decap-cms-oauth-provider.vercel.app
+  auth_endpoint: /api/auth
 
 media_folder: "images/uploads"
 public_folder: "/images/uploads"
