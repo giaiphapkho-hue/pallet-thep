@@ -1,6 +1,8 @@
 backend:
-  name: git-gateway
+  name: github
+  repo: giaiphapkho-hue/pallet-thep
   branch: main
+  site_domain: palletthep.netlify.app
 
 media_folder: "images/uploads"
 public_folder: "/images/uploads"
