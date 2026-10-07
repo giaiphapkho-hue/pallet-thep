@@ -3,193 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pallet Thép Công Nghiệp & Mô Hình 3D | Cơ khí Hòa Long</title>
+    <title>Pallet Thép Kỹ Thuật Công Nghiệp 3D</title>
     <style>
-        * { 
-            box-sizing: border-box; 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
-        }
-        body { 
-            margin: 0; 
-            padding: 0; 
-            overflow: hidden; 
-            background-color: #f1f5f9; 
-            color: #1e293b; 
-        }
-        
-        .container { 
-            display: flex; 
-            flex-wrap: wrap; 
-            width: 100vw; 
-            height: 100vh; 
-        }
-        
-        /* Panel Thông Tin Bên Trái */
-        .content-panel { 
-            width: 400px; 
-            max-width: 100%;
-            height: 100vh; 
-            overflow-y: auto; 
-            background: #ffffff; 
-            padding: 24px; 
-            box-shadow: 4px 0 20px rgba(0,0,0,0.06); 
-            z-index: 10;
-            border-right: 1px solid #e2e8f0;
-        }
-
-        /* Khung Hiển Thị 3D Nền Sáng */
-        .viewport-panel { 
-            flex: 1; 
-            height: 100vh; 
-            min-width: 300px;
-            position: relative; 
-            background-color: #f8fafc; 
-        }
-
-        #canvas-container { 
-            width: 100%; 
-            height: 100%; 
-        }
-
-        h1 { 
-            font-size: 1.35rem; 
-            color: #1e56a0; 
-            margin-top: 0; 
-            margin-bottom: 8px; 
-            font-weight: 700; 
-        }
-        
-        p.subtitle { 
-            font-size: 0.88rem; 
-            color: #64748b; 
-            margin-bottom: 20px; 
-            line-height: 1.4; 
-        }
-
-        .accordion { 
-            display: flex; 
-            flex-direction: column; 
-            gap: 12px; 
-        }
-        
-        .pallet-card {
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 14px 16px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            background: #ffffff;
-        }
-
-        .pallet-card:hover { 
-            border-color: #1e56a0; 
-            background: #f0f7ff; 
-        }
-
-        .pallet-card.active {
-            border-color: #1e56a0;
-            background: #eef5ff;
-            box-shadow: 0 2px 8px rgba(30, 86, 160, 0.15);
-        }
-
-        .pallet-card h3 {
-            margin: 0 0 6px 0;
-            font-size: 0.98rem;
-            color: #0f172a;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .pallet-card h3 span.badge {
-            font-size: 0.72rem;
-            background: #1e56a0;
-            color: #fff;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-weight: 500;
-        }
-
-        .pallet-card p { 
-            margin: 0; 
-            font-size: 0.83rem; 
-            color: #475569; 
-            line-height: 1.4; 
-        }
-
-        /* Hướng Dẫn Thao Tác (Tone Sáng) */
-        #controls-guide {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            color: #334155;
-            background: rgba(255, 255, 255, 0.85);
-            border: 1px solid #cbd5e1;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.78rem;
-            pointer-events: none;
-            backdrop-filter: blur(6px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        }
+        body { margin: 0; padding: 0; overflow: hidden; background-color: #f4f6f8; }
+        #canvas-container { width: 100vw; height: 100vh; }
     </style>
-    <!-- Import Three.js & OrbitControls -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 </head>
 <body>
-
-    <div class="container">
-        <!-- Danh sách loại Pallet -->
-        <div class="content-panel">
-            <h1>Mô Hình Pallet Thép 3D</h1>
-            <p class="subtitle">Giải pháp lưu trữ công nghiệp chuyên dụng cho kho vận & kho tự động.</p>
-            
-            <div class="accordion">
-                <div class="pallet-card active" onclick="switchPalletType('standard', this)">
-                    <h3>Pallet Thép Tiêu Chuẩn <span class="badge">Sơn Tĩnh Điện</span></h3>
-                    <p>Dùng cho kệ Selective, Drive-In. Khả năng chịu tải trọng nặng 1,000 - 3,000 kg.</p>
-                </div>
-
-                <div class="pallet-card" onclick="switchPalletType('stacking', this)">
-                    <h3>Pallet Thép Xếp Chồng <span class="badge">Post Pallet</span></h3>
-                    <p>Tích hợp 4 cột đứng và phễu định vị. Tối ưu không gian kho không dùng hệ thống kệ.</p>
-                </div>
-
-                <div class="pallet-card" onclick="switchPalletType('cage', this)">
-                    <h3>Pallet Lưới Thép <span class="badge">Steel Cage</span></h3>
-                    <p>Vách lưới thép đan bảo vệ hàng rời, hàng linh kiện. Cửa gập bán phần tiện lợi.</p>
-                </div>
-
-                <div class="pallet-card" onclick="switchPalletType('cold', this)">
-                    <h3>Pallet Thép Kho Lạnh <span class="badge">Mạ Kẽm Nhúng Nóng</span></h3>
-                    <p>Kháng ăn mòn tuyệt đối trong môi trường nhiệt độ âm (xuống đến -50°C).</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Khung Nhìn 3D Nền Sáng -->
-        <div class="viewport-panel">
-            <div id="canvas-container"></div>
-            <div id="controls-guide">
-                🖱️ Xoay: Chuột trái | Thu phóng: Lăn chuột | Di chuyển: Chuột phải
-            </div>
-        </div>
-    </div>
-
+    <div id="canvas-container"></div>
     <script>
-        // --- KHỞI TẠO THREE.JS SCENE (TÔNG NỀN SÁNG) ---
+        // 1. KHỞI TẠO SCENE & CAMERA
         const container = document.getElementById('canvas-container');
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0xecf0f5); // Màu nền xám xám xanh nhạt sáng rõ
-        scene.fog = new THREE.FogExp2(0xecf0f5, 0.003);
+        scene.background = new THREE.Color(0xf4f6f8);
 
-        const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
-        camera.position.set(160, 130, 200);
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(160, 110, 160);
 
         const renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.setSize(container.clientWidth, container.clientHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
         renderer.shadowMap.enabled = true;
         renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         container.appendChild(renderer.domElement);
@@ -197,211 +32,128 @@
         const controls = new THREE.OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
         controls.dampingFactor = 0.05;
-        controls.maxPolarAngle = Math.PI / 2;
 
-        // --- HỆ THỐNG ÁNH SÁNG TỐI ƯU CHO NỀN SÁNG ---
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.85); // Tăng độ sáng xung quanh
+        // 2. ÁNH SÁNG CÔNG NGHIỆP
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.75);
         scene.add(ambientLight);
 
-        const dirLight = new THREE.DirectionalLight(0xffffff, 0.7);
-        dirLight.position.set(200, 300, 150);
+        const dirLight = new THREE.DirectionalLight(0xffffff, 0.95);
+        dirLight.position.set(120, 160, 100);
         dirLight.castShadow = true;
         dirLight.shadow.mapSize.width = 2048;
         dirLight.shadow.mapSize.height = 2048;
-        dirLight.shadow.bias = -0.0005;
         scene.add(dirLight);
 
-        const fillLight = new THREE.DirectionalLight(0xb0c4de, 0.4);
-        fillLight.position.set(-200, 100, -150);
-        scene.add(fillLight);
+        // Mặt sàn & Lưới
+        const floorGeo = new THREE.PlaneGeometry(400, 400);
+        const floorMat = new THREE.MeshStandardMaterial({ color: 0xe5e7eb, roughness: 0.8 });
+        const floor = new THREE.Mesh(floorGeo, floorMat);
+        floor.rotation.x = -Math.PI / 2;
+        floor.receiveShadow = true;
+        scene.add(floor);
 
-        // --- LƯỚI MẶT ĐẤT NỀN SÁNG ---
-        const grid = new THREE.GridHelper(400, 40, 0x1e56a0, 0xc2d1e0);
-        grid.position.y = 0;
+        const grid = new THREE.GridHelper(400, 40, 0x9ca3af, 0xd1d5db);
+        grid.position.y = 0.1;
         scene.add(grid);
 
-        // --- VẬT LIỆU PALLET (TƯƠNG PHẢN RÕ) ---
-        const blueSteelMat = new THREE.MeshStandardMaterial({ color: 0x1d529e, metalness: 0.4, roughness: 0.3 });
-        const galvSteelMat = new THREE.MeshStandardMaterial({ color: 0x8194a7, metalness: 0.8, roughness: 0.25 });
-        const wireMat = new THREE.MeshStandardMaterial({ color: 0x4a5568, metalness: 0.6, roughness: 0.3 });
+        // 3. MÔ HÌNH PALLET THÉP TIÊU CHUẨN
+        const steelPallet = new THREE.Group();
 
-        // Kích thước chuẩn Pallet (cm)
-        const L = 120, W = 100, H = 15;
-        const palletGroup = new THREE.Group();
-        scene.add(palletGroup);
-
-        let currentPalletMesh = null;
-
-        // Hàm dựng khung Pallet thép cơ bản
-        function buildBasePallet(mat) {
-            const group = new THREE.Group();
-
-            // 1. Chân pallet (Runner Legs)
-            const legGeo = new THREE.BoxGeometry(L, H - 3, 10);
-            [-W/2 + 5, 0, W/2 - 5].forEach(z => {
-                const leg = new THREE.Mesh(legGeo, mat);
-                leg.position.set(0, (H - 3) / 2, z);
-                leg.castShadow = true;
-                leg.receiveShadow = true;
-                group.add(leg);
-            });
-
-            // 2. Thanh liên kết chân ngang
-            const crossGeo = new THREE.BoxGeometry(8, 3, W);
-            [-L/2 + 6, 0, L/2 - 6].forEach(x => {
-                const cross = new THREE.Mesh(crossGeo, mat);
-                cross.position.set(x, (H - 3) + 1.5, 0);
-                cross.castShadow = true;
-                cross.receiveShadow = true;
-                group.add(cross);
-            });
-
-            // 3. Mặt nan Pallet (Top Slats)
-            const slatCount = 7;
-            const slatSpacing = (L - 10) / (slatCount - 1);
-            const slatGeo = new THREE.BoxGeometry(8, 0.4, W);
-            for (let i = 0; i < slatCount; i++) {
-                const slat = new THREE.Mesh(slatGeo, mat);
-                slat.position.set(-L/2 + 5 + i * slatSpacing, H - 0.2, 0);
-                slat.castShadow = true;
-                slat.receiveShadow = true;
-                group.add(slat);
-            }
-
-            return group;
-        }
-
-        // --- TẢI MÔ HÌNH THEO LOẠI ---
-        function loadPalletModel(type) {
-            if (currentPalletMesh) {
-                palletGroup.remove(currentPalletMesh);
-            }
-
-            if (type === 'standard') {
-                currentPalletMesh = buildBasePallet(blueSteelMat);
-            } 
-            else if (type === 'stacking') {
-                currentPalletMesh = buildBasePallet(blueSteelMat);
-                
-                const postH = 110;
-                const radius = 3.5;
-                const corners = [
-                    [-L/2 + 4, -W/2 + 4], [L/2 - 4, -W/2 + 4],
-                    [-L/2 + 4, W/2 - 4], [L/2 - 4, W/2 - 4]
-                ];
-
-                corners.forEach(([x, z]) => {
-                    const postGeo = new THREE.CylinderGeometry(radius, radius, postH, 16);
-                    const postMesh = new THREE.Mesh(postGeo, blueSteelMat);
-                    postMesh.castShadow = true;
-                    postMesh.position.set(x, H + postH / 2, z);
-                    currentPalletMesh.add(postMesh);
-
-                    const cupGeo = new THREE.CylinderGeometry(5.5, 3.2, 5, 16, 1, true);
-                    const cupMat = new THREE.MeshStandardMaterial({ color: 0xd97706, metalness: 0.6, roughness: 0.3, side: THREE.DoubleSide });
-                    const cupMesh = new THREE.Mesh(cupGeo, cupMat);
-                    cupMesh.castShadow = true;
-                    cupMesh.position.set(x, H + postH + 2.5, z);
-                    currentPalletMesh.add(cupMesh);
-
-                    const baseRingGeo = new THREE.CylinderGeometry(4, 4, 1.5, 16);
-                    const baseRingMesh = new THREE.Mesh(baseRingGeo, galvSteelMat);
-                    baseRingMesh.position.set(x, H + 0.75, z);
-                    currentPalletMesh.add(baseRingMesh);
-                });
-
-                const topBarGeoX = new THREE.BoxGeometry(L - 8, 3, 3);
-                [-W/2 + 4, W/2 - 4].forEach(z => {
-                    const bar = new THREE.Mesh(topBarGeoX, blueSteelMat);
-                    bar.position.set(0, H + postH - 1.5, z);
-                    currentPalletMesh.add(bar);
-                });
-            } 
-            else if (type === 'cage') {
-                currentPalletMesh = buildBasePallet(blueSteelMat);
-                
-                const cageH = 65;
-                const cageGroup = new THREE.Group();
-
-                const corners = [
-                    [-L/2 + 2, -W/2 + 2], [L/2 - 2, -W/2 + 2],
-                    [-L/2 + 2, W/2 - 2], [L/2 - 2, W/2 - 2]
-                ];
-                corners.forEach(([x, z]) => {
-                    const frameGeo = new THREE.BoxGeometry(3, cageH, 3);
-                    const frameMesh = new THREE.Mesh(frameGeo, blueSteelMat);
-                    frameMesh.castShadow = true;
-                    frameMesh.position.set(x, H + cageH/2, z);
-                    cageGroup.add(frameMesh);
-                });
-
-                const gridSpacing = 8;
-                
-                [-W/2 + 2, W/2 - 2].forEach(z => {
-                    for (let y = H + 4; y < H + cageH; y += gridSpacing) {
-                        const hWire = new THREE.BoxGeometry(L - 4, 0.8, 0.8);
-                        const wire = new THREE.Mesh(hWire, wireMat);
-                        wire.position.set(0, y, z);
-                        cageGroup.add(wire);
-                    }
-                    for (let x = -L/2 + 4; x < L/2 - 2; x += gridSpacing) {
-                        const vWire = new THREE.BoxGeometry(0.8, cageH - 2, 0.8);
-                        const wire = new THREE.Mesh(vWire, wireMat);
-                        wire.position.set(x, H + cageH/2, z);
-                        cageGroup.add(wire);
-                    }
-                });
-
-                [-L/2 + 2, L/2 - 2].forEach(x => {
-                    for (let y = H + 4; y < H + cageH; y += gridSpacing) {
-                        const hWire = new THREE.BoxGeometry(0.8, 0.8, W - 4);
-                        const wire = new THREE.Mesh(hWire, wireMat);
-                        wire.position.set(x, y, 0);
-                        cageGroup.add(wire);
-                    }
-                    for (let z = -W/2 + 4; z < W/2 - 2; z += gridSpacing) {
-                        const vWire = new THREE.BoxGeometry(0.8, cageH - 2, 0.8);
-                        const wire = new THREE.Mesh(vWire, wireMat);
-                        wire.position.set(x, H + cageH/2, z);
-                        cageGroup.add(wire);
-                    }
-                });
-
-                const gateBarGeo = new THREE.BoxGeometry(L - 4, 2, 2);
-                const gateBar = new THREE.Mesh(gateBarGeo, galvSteelMat);
-                gateBar.position.set(0, H + cageH / 2, W / 2 - 2);
-                cageGroup.add(gateBar);
-
-                currentPalletMesh.add(cageGroup);
-            } 
-            else if (type === 'cold') {
-                currentPalletMesh = buildBasePallet(galvSteelMat);
-            }
-
-            palletGroup.add(currentPalletMesh);
-        }
-
-        // Tải mặc định
-        loadPalletModel('standard');
-        controls.target.set(0, H / 2, 0);
-
-        // Chuyển đổi loại Pallet
-        window.switchPalletType = function(type, element) {
-            document.querySelectorAll('.pallet-card').forEach(card => card.classList.remove('active'));
-            element.classList.add('active');
-            loadPalletModel(type);
-        };
-
-        // Resize responsive
-        window.addEventListener('resize', () => {
-            const width = container.clientWidth;
-            const height = container.clientHeight;
-            camera.aspect = width / height;
-            camera.updateProjectionMatrix();
-            renderer.setSize(width, height);
+        // Vật liệu Thép sơn tĩnh điện RAL 5005 (Xanh dương công nghiệp)
+        const steelMaterial = new THREE.MeshStandardMaterial({ 
+            color: 0x1d4ed8, 
+            metalness: 0.5, 
+            roughness: 0.35 
         });
 
-        // Animation Loop
+        // Vật liệu Thép mạ kẽm / Chân đệm gia cường
+        const galvanizedMat = new THREE.MeshStandardMaterial({ 
+            color: 0x475569, 
+            metalness: 0.7, 
+            roughness: 0.25 
+        });
+
+        // Thông số Pallet tiêu chuẩn (Dài 1200mm x Rộng 1000mm x Cao 150mm) - Tỉ lệ 1:10
+        const L = 120, W = 100, H = 15;
+
+        // A. NAN MẶT TRÊN (Mặt nan dập gân C-Profile chịu tải)
+        const deckCount = 7;
+        const deckGap = 2;
+        const deckWidth = (L - (deckCount - 1) * deckGap) / deckCount; // ~15.4
+        const deckThick = 2.5; // Chiều dày nan dập
+
+        for (let i = 0; i < deckCount; i++) {
+            const xPos = -L / 2 + deckWidth / 2 + i * (deckWidth + deckGap);
+            
+            // Thân nan dập gân
+            const deckGeo = new THREE.BoxGeometry(deckWidth, deckThick, W);
+            const deckMesh = new THREE.Mesh(deckGeo, steelMaterial);
+            deckMesh.castShadow = true;
+            deckMesh.receiveShadow = true;
+            deckMesh.position.set(xPos, H - deckThick / 2, 0);
+            steelPallet.add(deckMesh);
+
+            // Mép gấp gân tăng cứng 2 bên mép nan (C-Flange)
+            [-W / 2 + 0.5, W / 2 - 0.5].forEach(zEdge => {
+                const flangeGeo = new THREE.BoxGeometry(deckWidth, 1.2, 1);
+                const flangeMesh = new THREE.Mesh(flangeGeo, steelMaterial);
+                flangeMesh.position.set(xPos, H - deckThick - 0.6, zEdge);
+                steelPallet.add(flangeMesh);
+            });
+        }
+
+        // B. CHÂN ĐỐ C CHỊU LỰC DỌC (C-Channel Beams - 3 Dầm chính)
+        const beamPositionsZ = [-W / 2 + 6, 0, W / 2 - 6];
+        const beamHeight = 9.5;
+        const beamWidth = 8;
+
+        beamPositionsZ.forEach(zPos => {
+            // Thanh đố C dọc
+            const beamGeo = new THREE.BoxGeometry(L, beamHeight, beamWidth);
+            const beamMesh = new THREE.Mesh(beamGeo, steelMaterial);
+            beamMesh.castShadow = true;
+            beamMesh.receiveShadow = true;
+            beamMesh.position.set(0, H - deckThick - beamHeight / 2, zPos);
+            steelPallet.add(beamMesh);
+
+            // Các lỗ khoét thoát khối lượng/cắm dĩa xe nâng 2 chiều
+            [-L / 4, L / 4].forEach(xHole => {
+                const holeCutGeo = new THREE.BoxGeometry(22, beamHeight - 2, beamWidth + 0.2);
+                const holeCutMat = new THREE.MeshBasicMaterial({ color: 0xf4f6f8 }); // Tạo điểm ngắt trực quan
+                // Giữ kết cấu liên tục bằng chân chịu lực đệm
+            });
+        });
+
+        // C. THANH GIẰNG ĐÁY LỐT XE NÂNG (Bottom Skids - 3 thanh dọc liên kết)
+        beamPositionsZ.forEach(zPos => {
+            const skidGeo = new THREE.BoxGeometry(L, 2, beamWidth + 2);
+            const skidMesh = new THREE.Mesh(skidGeo, steelMaterial);
+            skidMesh.castShadow = true;
+            skidMesh.receiveShadow = true;
+            skidMesh.position.set(0, 1, zPos);
+            steelPallet.add(skidMesh);
+
+            // Ốp góc bảo vệ va đập xe nâng (Corner Protectors)
+            [-L / 2 + 2, L / 2 - 2].forEach(xCap => {
+                const capGeo = new THREE.BoxGeometry(4, beamHeight + 4, beamWidth + 2.5);
+                const capMesh = new THREE.Mesh(capGeo, galvanizedMat);
+                capMesh.castShadow = true;
+                capMesh.position.set(xCap, (beamHeight + 4) / 2, zPos);
+                steelPallet.add(capMesh);
+            });
+        });
+
+        // Đặt tâm xoay OrbitControls chuẩn vị trí trung tâm Pallet
+        controls.target.set(0, H / 2, 0);
+        scene.add(steelPallet);
+
+        // 4. RESIZE & RENDER LOOP
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
         function animate() {
             requestAnimationFrame(animate);
             controls.update();
