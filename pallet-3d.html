@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pallet Thép 3D</title>
+    <title>Pallet Thép 3D Công Nghiệp</title>
     <style>
         body { margin: 0; padding: 0; overflow: hidden; background-color: #f4f6f8; }
         #canvas-container { width: 100vw; height: 100vh; }
@@ -37,12 +37,14 @@
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
         scene.add(ambientLight);
 
-        const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
-        dirLight.position.set(100, 150, 50);
+        const dirLight = new THREE.DirectionalLight(0xffffff, 0.9);
+        dirLight.position.set(100, 150, 80);
         dirLight.castShadow = true;
+        dirLight.shadow.mapSize.width = 2048;
+        dirLight.shadow.mapSize.height = 2048;
         scene.add(dirLight);
 
-        // Mặt sàn
+        // Mặt sàn & Lưới tọa độ
         const floorGeo = new THREE.PlaneGeometry(400, 400);
         const floorMat = new THREE.MeshStandardMaterial({ color: 0xe5e7eb, roughness: 0.8 });
         const floor = new THREE.Mesh(floorGeo, floorMat);
@@ -54,57 +56,93 @@
         grid.position.y = 0.1;
         scene.add(grid);
 
-        // Khung Pallet Thép
+        // --- MÔ HÌNH PALLET THÉP CÔNG NGHIỆP ---
         const palletGroup = new THREE.Group();
+
+        // Vật liệu thép sơn tĩnh điện màu xanh công nghiệp (RAL 5005)
         const steelMaterial = new THREE.MeshStandardMaterial({
-            color: 0x1d4ed8, // Xanh dương công nghiệp
-            metalness: 0.5,
+            color: 0x1e56a0,
+            metalness: 0.6,
             roughness: 0.3
         });
 
-        function createBeam(w, h, d, x, y, z) {
-            const geo = new THREE.BoxGeometry(w, h, d);
-            const mesh = new THREE.Mesh(geo, steelMaterial);
-            mesh.position.set(x, y, z);
-            mesh.castShadow = true;
-            mesh.receiveShadow = true;
-            palletGroup.add(mesh);
-        }
-
-        const width = 120, depth = 100, height = 15, thickness = 2.5;
-
-        // Thanh mặt trên
-        const numTopBeams = 7;
-        const topBeamSpacing = (depth - thickness) / (numTopBeams - 1);
-        for (let i = 0; i < numTopBeams; i++) {
-            const zPos = -depth / 2 + thickness / 2 + i * topBeamSpacing;
-            createBeam(width, thickness, 8, 0, height - thickness / 2, zPos);
-        }
-
-        // Chân đỡ dọc
-        [-width / 2 + 5, 0, width / 2 - 5].forEach(xPos => {
-            createBeam(thickness * 2, height - thickness * 2, depth, xPos, height / 2, 0);
+        // Vật liệu chân gia cường (Xám thép)
+        const accentMaterial = new THREE.MeshStandardMaterial({
+            color: 0x333333,
+            metalness: 0.8,
+            roughness: 0.2
         });
 
-        // Thanh mặt đáy
-        [-depth / 2 + 5, 0, depth / 2 - 5].forEach(zPos => {
-            createBeam(width, thickness, 10, 0, thickness / 2, zPos);
+        // Kích thước chuẩn Pallet: Dài 1200 x Rộng 1000 x Cao 150 (Tỉ lệ 1:10)
+        const length = 120, width = 100, height = 15;
+
+        // 1. MẶT NAN PALLET (Top Decks - 7 thanh nan thép phẳng)
+        const deckCount = 7;
+        const deckWidth = (length - 10) / deckCount;
+        for (let i = 0; i < deckCount; i++) {
+            const deckGeo = new THREE.BoxGeometry(deckWidth - 1, 2, width);
+            const deckMesh = new THREE.Mesh(deckGeo, steelMaterial);
+            deckMesh.castShadow = true;
+            deckMesh.receiveShadow = true;
+            deckMesh.position.set(-length / 2 + deckWidth / 2 + i * deckWidth, height - 1, 0);
+            palletGroup.add(deckMesh);
+        }
+
+        // 2. VAI CHỊU LỰC DỌC (3 thanh xà dầm bên dưới mặt nan)
+        const stringerPositions = [-width / 2 + 5, 0, width / 2 - 5];
+        stringerPositions.forEach(zPos => {
+            const stringerGeo = new THREE.BoxGeometry(length, 3, 6);
+            const stringerMesh = new THREE.Mesh(stringerGeo, steelMaterial);
+            stringerMesh.castShadow = true;
+            stringerMesh.receiveShadow = true;
+            stringerMesh.position.set(0, height - 3.5, zPos);
+            palletGroup.add(stringerMesh);
         });
+
+        // 3. CỤM CHÂN TRỤ & ĐẾ GIA CƯỜNG (9 vị trí chịu lực chính)
+        const xPositions = [-length / 2 + 6, 0, length / 2 - 6];
+        const zPositions = [-width / 2 + 6, 0, width / 2 - 6];
+
+        xPositions.forEach(x => {
+            zPositions.forEach(z => {
+                // Cột trụ đứng
+                const legGeo = new THREE.BoxGeometry(8, height - 6, 8);
+                const legMesh = new THREE.Mesh(legGeo, steelMaterial);
+                legMesh.castShadow = true;
+                legMesh.receiveShadow = true;
+                legMesh.position.set(x, (height - 6) / 2 + 1.5, z);
+                palletGroup.add(legMesh);
+
+                // Đế chân gia cường
+                const baseGeo = new THREE.BoxGeometry(10, 1.5, 10);
+                const baseMesh = new THREE.Mesh(baseGeo, accentMaterial);
+                baseMesh.castShadow = true;
+                baseMesh.receiveShadow = true;
+                baseMesh.position.set(x, 0.75, z);
+                palletGroup.add(baseMesh);
+            });
+        });
+
+        // 4. THANH GIẰNG ĐÁY (3 thanh liên kết các cụm chân trụ)
+        zPositions.forEach(zPos => {
+            const runnerGeo = new THREE.BoxGeometry(length, 1.5, 8);
+            const runnerMesh = new THREE.Mesh(runnerGeo, steelMaterial);
+            runnerMesh.castShadow = true;
+            runnerMesh.receiveShadow = true;
+            runnerMesh.position.set(0, 0.75, zPos);
+            palletGroup.add(runnerMesh);
+        });
+
+        // Căn tâm tâm điểm điều khiển OrbitControls vào pallet
+        controls.target.set(0, height / 2, 0);
 
         scene.add(palletGroup);
 
+        // Xử lý Resize cửa sổ
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
         });
 
-        function animate() {
-            requestAnimationFrame(animate);
-            controls.update();
-            renderer.render(scene, camera);
-        }
-        animate();
-    </script>
-</body>
-</html>
+        // Vòng lặp Render
