@@ -3,27 +3,216 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pallet Thép Kỹ Thuật Công Nghiệp 3D</title>
+    <title>Pallet Thép Công Nghiệp & Mô Hình 3D | Cơ khí Hòa Long</title>
     <style>
-        body { margin: 0; padding: 0; overflow: hidden; background-color: #f4f6f8; }
-        #canvas-container { width: 100vw; height: 100vh; }
+        * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body { margin: 0; padding: 0; overflow-x: hidden; background-color: #f4f6f8; color: #1e293b; }
+        
+        /* Layout dạng Split-screen */
+        .container { display: flex; flex-wrap: wrap; width: 100vw; height: 100vh; }
+        
+        /* Cột bên trái: Nội dung các loại Pallet */
+        .content-panel { 
+            width: 450px; 
+            max-width: 100%;
+            height: 100vh; 
+            overflow-y: auto; 
+            background: #ffffff; 
+            padding: 24px; 
+            box-shadow: 2px 0 10px rgba(0,0,0,0.08); 
+            z-index: 10;
+        }
+
+        /* Cột bên phải: Canvas Three.js 3D */
+        .viewport-panel { 
+            flex: 1; 
+            height: 100vh; 
+            min-width: 300px;
+            position: relative; 
+            background-color: #eef2f6; 
+        }
+
+        #canvas-container { width: 100%; height: 100%; }
+
+        /* Typography & Components */
+        h1 { font-size: 1.4rem; color: #1e56a0; margin-top: 0; margin-bottom: 8px; font-weight: 700; }
+        p.subtitle { font-size: 0.9rem; color: #64748b; margin-bottom: 20px; line-height: 1.4; }
+
+        .accordion { display: flex; flex-direction: column; gap: 12px; }
+        
+        .pallet-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 14px 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: #fafafa;
+        }
+
+        .pallet-card:hover {
+            border-color: #1e56a0;
+            background: #f0f7ff;
+        }
+
+        .pallet-card.active {
+            border-color: #1e56a0;
+            background: #eef5ff;
+            box-shadow: 0 2px 6px rgba(30, 86, 160, 0.15);
+        }
+
+        .pallet-card h3 {
+            margin: 0 0 6px 0;
+            font-size: 1rem;
+            color: #0f172a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .pallet-card h3 span.badge {
+            font-size: 0.75rem;
+            background: #1e56a0;
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+
+        .pallet-card p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: #475569;
+            line-height: 1.4;
+        }
+
+        .specs-table {
+            width: 100%;
+            margin-top: 24px;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+        }
+
+        .specs-table th, .specs-table td {
+            padding: 8px 10px;
+            border: 1px solid #e2e8f0;
+            text-align: left;
+        }
+
+        .specs-table th {
+            background-color: #1e56a0;
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .specs-table tr:nth-child(even) { background-color: #f8fafc; }
+
+        /* Label thông tin 3D Overlay */
+        .info-overlay {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            color: #334155;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            pointer-events: none;
+        }
+
+        @media (max-width: 768px) {
+            .container { flex-direction: column-reverse; }
+            .content-panel { width: 100%; height: 50vh; }
+            .viewport-panel { height: 50vh; }
+        }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 </head>
 <body>
-    <div id="canvas-container"></div>
+
+    <div class="container">
+        <!-- Cột Nội Dung Sản Phẩm -->
+        <div class="content-panel">
+            <h1>Các Loại Pallet Thép Thông Dụng</h1>
+            <p class="subtitle">Giải pháp lưu trữ công nghiệp tải trọng nặng đạt tiêu chuẩn sản xuất tại Hoa Long Mechanical (HLM).</p>
+
+            <div class="accordion">
+                <!-- Loại 1: Standard / Rack Pallet -->
+                <div class="pallet-card active" onclick="switchPalletType('standard', this)">
+                    <h3>Pallet Thép Tiêu Chuẩn / Dùng Cho Kệ <span class="badge">Phổ biến</span></h3>
+                    <p>Thiết kế nan dập gân C-Profile chịu tải cao, chuyên dụng cho hệ thống kệ Selective, Drive-In, VNA. Chịu tải động từ 1000 - 2500kg.</p>
+                </div>
+
+                <!-- Loại 2: Pallet Xếp Chồng -->
+                <div class="pallet-card" onclick="switchPalletType('stacking', this)">
+                    <h3>Pallet Thép Xếp Chồng (Stacking) <span class="badge">Linh hoạt</span></h3>
+                    <p>Tích hợp 4 chân trụ tai gài giúp xếp chồng 3 - 5 tầng mà không cần lắp hệ thống kệ kho, tối ưu không gian nhà xưởng.</p>
+                </div>
+
+                <!-- Loại 3: Pallet Lồng -->
+                <div class="pallet-card" onclick="switchPalletType('cage', this)">
+                    <h3>Pallet Thép Lồng (Khung Bao Mesh) <span class="badge">An toàn</span></h3>
+                    <p>Trang bị vách lưới thép hoặc vách tôn xung quanh, bảo vệ hàng hóa dạng rời, linh kiện điện tử, phụ tùng không bị rơi rớt.</p>
+                </div>
+
+                <!-- Loại 4: Pallet Kho Lạnh -->
+                <div class="pallet-card" onclick="switchPalletType('cold', this)">
+                    <h3>Pallet Thép Cho Kho Lạnh (Mạ Kẽm) <span class="badge">Chống gỉ</span></h3>
+                    <p>Xử lý bề mặt bằng Mạ kẽm nhúng nóng (Hot-dip galvanized), chịu nhiệt độ âm sâu (đến -50°C) không bị giòn gãy hay hoen gỉ.</p>
+                </div>
+            </div>
+
+            <!-- Bảng Thông Số Kỹ Thuật -->
+            <h3 style="margin-top: 24px; font-size: 1rem; color: #0f172a;">Đặc Tính Kỹ Thuật (Tham Khảo)</h3>
+            <table class="specs-table">
+                <tr>
+                    <th>Thông số</th>
+                    <th>Chi tiết</th>
+                </tr>
+                <tr>
+                    <td>Vật liệu</td>
+                    <td>Thép SS400 / Q235 (JIS G3101)</td>
+                </tr>
+                <tr>
+                    <td>Bề mặt</td>
+                    <td>Sơn tĩnh điện cao cấp / Mạ kẽm nhúng nóng</td>
+                </tr>
+                <tr>
+                    <td>Tải trọng tĩnh</td>
+                    <td>2000kg - 5000kg</td>
+                </tr>
+                <tr>
+                    <td>Tải trọng động</td>
+                    <td>1000kg - 2500kg</td>
+                </tr>
+                <tr>
+                    <td>Kích thước chuẩn</td>
+                    <td>1200x1000mm, 1100x1100mm (Hoặc thiết kế riêng)</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Cột Hiển Thị Mô Hình 3D -->
+        <div class="viewport-panel">
+            <div id="canvas-container"></div>
+            <div class="info-overlay">
+                💡 <b>Mô phỏng 3D:</b> Nhấp giữ chuột để xoay | Cuộn để Zoom
+            </div>
+        </div>
+    </div>
+
     <script>
-        // 1. KHỞI TẠO SCENE & CAMERA
+        // --- 1. KHỞI TẠO SCENE & RENDERER ---
         const container = document.getElementById('canvas-container');
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0xf4f6f8);
+        scene.background = new THREE.Color(0xeef2f6);
 
-        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
         camera.position.set(160, 110, 160);
 
         const renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setSize(container.clientWidth, container.clientHeight);
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.shadowMap.enabled = true;
         renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -33,7 +222,7 @@
         controls.enableDamping = true;
         controls.dampingFactor = 0.05;
 
-        // 2. ÁNH SÁNG CÔNG NGHIỆP
+        // --- 2. ÁNH SÁNG ---
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.75);
         scene.add(ambientLight);
 
@@ -46,112 +235,129 @@
 
         // Mặt sàn & Lưới
         const floorGeo = new THREE.PlaneGeometry(400, 400);
-        const floorMat = new THREE.MeshStandardMaterial({ color: 0xe5e7eb, roughness: 0.8 });
+        const floorMat = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.8 });
         const floor = new THREE.Mesh(floorGeo, floorMat);
         floor.rotation.x = -Math.PI / 2;
         floor.receiveShadow = true;
         scene.add(floor);
 
-        const grid = new THREE.GridHelper(400, 40, 0x9ca3af, 0xd1d5db);
+        const grid = new THREE.GridHelper(400, 40, 0x9ca3af, 0xc1c5cb);
         grid.position.y = 0.1;
         scene.add(grid);
 
-        // 3. MÔ HÌNH PALLET THÉP TIÊU CHUẨN
-        const steelPallet = new THREE.Group();
+        // --- 3. TẠO CÁC MÔ HÌNH PALLET THÉP ---
+        const palletGroup = new THREE.Group();
+        scene.add(palletGroup);
 
-        // Vật liệu Thép sơn tĩnh điện RAL 5005 (Xanh dương công nghiệp)
-        const steelMaterial = new THREE.MeshStandardMaterial({ 
-            color: 0x1d4ed8, 
-            metalness: 0.5, 
-            roughness: 0.35 
-        });
+        // Materials
+        const blueSteelMat = new THREE.MeshStandardMaterial({ color: 0x1d4ed8, metalness: 0.5, roughness: 0.35 });
+        const galvSteelMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.8, roughness: 0.2 });
+        const cageMeshMat = new THREE.MeshStandardMaterial({ color: 0x475569, wireframe: true });
 
-        // Vật liệu Thép mạ kẽm / Chân đệm gia cường
-        const galvanizedMat = new THREE.MeshStandardMaterial({ 
-            color: 0x475569, 
-            metalness: 0.7, 
-            roughness: 0.25 
-        });
-
-        // Thông số Pallet tiêu chuẩn (Dài 1200mm x Rộng 1000mm x Cao 150mm) - Tỉ lệ 1:10
         const L = 120, W = 100, H = 15;
 
-        // A. NAN MẶT TRÊN (Mặt nan dập gân C-Profile chịu tải)
-        const deckCount = 7;
-        const deckGap = 2;
-        const deckWidth = (L - (deckCount - 1) * deckGap) / deckCount; // ~15.4
-        const deckThick = 2.5; // Chiều dày nan dập
-
-        for (let i = 0; i < deckCount; i++) {
-            const xPos = -L / 2 + deckWidth / 2 + i * (deckWidth + deckGap);
+        // Hàm dựng Pallet Thép Tiêu Chuẩn
+        function buildBasePallet(mat = blueSteelMat) {
+            const group = new THREE.Group();
             
-            // Thân nan dập gân
-            const deckGeo = new THREE.BoxGeometry(deckWidth, deckThick, W);
-            const deckMesh = new THREE.Mesh(deckGeo, steelMaterial);
-            deckMesh.castShadow = true;
-            deckMesh.receiveShadow = true;
-            deckMesh.position.set(xPos, H - deckThick / 2, 0);
-            steelPallet.add(deckMesh);
+            // Nan mặt trên (C-Profile Deck)
+            const deckCount = 7, deckGap = 2;
+            const deckWidth = (L - (deckCount - 1) * deckGap) / deckCount;
+            for (let i = 0; i < deckCount; i++) {
+                const xPos = -L / 2 + deckWidth / 2 + i * (deckWidth + deckGap);
+                const deckGeo = new THREE.BoxGeometry(deckWidth, 2.5, W);
+                const deckMesh = new THREE.Mesh(deckGeo, mat);
+                deckMesh.castShadow = true;
+                deckMesh.position.set(xPos, H - 1.25, 0);
+                group.add(deckMesh);
+            }
 
-            // Mép gấp gân tăng cứng 2 bên mép nan (C-Flange)
-            [-W / 2 + 0.5, W / 2 - 0.5].forEach(zEdge => {
-                const flangeGeo = new THREE.BoxGeometry(deckWidth, 1.2, 1);
-                const flangeMesh = new THREE.Mesh(flangeGeo, steelMaterial);
-                flangeMesh.position.set(xPos, H - deckThick - 0.6, zEdge);
-                steelPallet.add(flangeMesh);
+            // Dầm chịu lực C-Channel (3 dầm)
+            const beamZ = [-W / 2 + 6, 0, W / 2 - 6];
+            beamZ.forEach(z => {
+                const beamGeo = new THREE.BoxGeometry(L, 9.5, 8);
+                const beamMesh = new THREE.Mesh(beamGeo, mat);
+                beamMesh.castShadow = true;
+                beamMesh.position.set(0, H - 2.5 - 4.75, z);
+                group.add(beamMesh);
+
+                // Thanh giằng đáy
+                const skidGeo = new THREE.BoxGeometry(L, 2, 10);
+                const skidMesh = new THREE.Mesh(skidGeo, mat);
+                skidMesh.castShadow = true;
+                skidMesh.position.set(0, 1, z);
+                group.add(skidMesh);
             });
+
+            return group;
         }
 
-        // B. CHÂN ĐỐ C CHỊU LỰC DỌC (C-Channel Beams - 3 Dầm chính)
-        const beamPositionsZ = [-W / 2 + 6, 0, W / 2 - 6];
-        const beamHeight = 9.5;
-        const beamWidth = 8;
+        // Biến lưu trạng thái hiển thị
+        let currentPalletMesh = null;
 
-        beamPositionsZ.forEach(zPos => {
-            // Thanh đố C dọc
-            const beamGeo = new THREE.BoxGeometry(L, beamHeight, beamWidth);
-            const beamMesh = new THREE.Mesh(beamGeo, steelMaterial);
-            beamMesh.castShadow = true;
-            beamMesh.receiveShadow = true;
-            beamMesh.position.set(0, H - deckThick - beamHeight / 2, zPos);
-            steelPallet.add(beamMesh);
+        function loadPalletModel(type) {
+            if (currentPalletMesh) palletGroup.remove(currentPalletMesh);
 
-            // Các lỗ khoét thoát khối lượng/cắm dĩa xe nâng 2 chiều
-            [-L / 4, L / 4].forEach(xHole => {
-                const holeCutGeo = new THREE.BoxGeometry(22, beamHeight - 2, beamWidth + 0.2);
-                const holeCutMat = new THREE.MeshBasicMaterial({ color: 0xf4f6f8 }); // Tạo điểm ngắt trực quan
-                // Giữ kết cấu liên tục bằng chân chịu lực đệm
-            });
-        });
+            if (type === 'standard') {
+                currentPalletMesh = buildBasePallet(blueSteelMat);
+            } 
+            else if (type === 'stacking') {
+                currentPalletMesh = buildBasePallet(blueSteelMat);
+                // Thêm 4 cột trụ xếp chồng
+                const postHeight = 60;
+                const corners = [
+                    [-L/2 + 4, -W/2 + 4], [L/2 - 4, -W/2 + 4],
+                    [-L/2 + 4, W/2 - 4], [L/2 - 4, W/2 - 4]
+                ];
+                corners.forEach(([x, z]) => {
+                    const postGeo = new THREE.BoxGeometry(6, postHeight, 6);
+                    const postMesh = new THREE.Mesh(postGeo, blueSteelMat);
+                    postMesh.castShadow = true;
+                    postMesh.position.set(x, H + postHeight / 2, z);
+                    currentPalletMesh.add(postMesh);
 
-        // C. THANH GIẰNG ĐÁY LỐT XE NÂNG (Bottom Skids - 3 thanh dọc liên kết)
-        beamPositionsZ.forEach(zPos => {
-            const skidGeo = new THREE.BoxGeometry(L, 2, beamWidth + 2);
-            const skidMesh = new THREE.Mesh(skidGeo, steelMaterial);
-            skidMesh.castShadow = true;
-            skidMesh.receiveShadow = true;
-            skidMesh.position.set(0, 1, zPos);
-            steelPallet.add(skidMesh);
+                    // Tai gài xếp chồng ở đỉnh
+                    const cupGeo = new THREE.BoxGeometry(8, 4, 8);
+                    const cupMesh = new THREE.Mesh(cupGeo, galvSteelMat);
+                    cupMesh.position.set(x, H + postHeight + 2, z);
+                    currentPalletMesh.add(cupMesh);
+                });
+            } 
+            else if (type === 'cage') {
+                currentPalletMesh = buildBasePallet(blueSteelMat);
+                // Thêm vách lồng lưới thép 4 bên
+                const cageHeight = 50;
+                const cageGeo = new THREE.BoxGeometry(L - 2, cageHeight, W - 2);
+                const cageMesh = new THREE.Mesh(cageGeo, cageMeshMat);
+                cageMesh.position.set(0, H + cageHeight / 2, 0);
+                currentPalletMesh.add(cageMesh);
+            } 
+            else if (type === 'cold') {
+                // Pallet thép mạ kẽm toàn bộ
+                currentPalletMesh = buildBasePallet(galvSteelMat);
+            }
 
-            // Ốp góc bảo vệ va đập xe nâng (Corner Protectors)
-            [-L / 2 + 2, L / 2 - 2].forEach(xCap => {
-                const capGeo = new THREE.BoxGeometry(4, beamHeight + 4, beamWidth + 2.5);
-                const capMesh = new THREE.Mesh(capGeo, galvanizedMat);
-                capMesh.castShadow = true;
-                capMesh.position.set(xCap, (beamHeight + 4) / 2, zPos);
-                steelPallet.add(capMesh);
-            });
-        });
+            palletGroup.add(currentPalletMesh);
+        }
 
-        // Đặt tâm xoay OrbitControls chuẩn vị trí trung tâm Pallet
+        // Tải mô hình mặc định
+        loadPalletModel('standard');
         controls.target.set(0, H / 2, 0);
-        scene.add(steelPallet);
 
-        // 4. RESIZE & RENDER LOOP
+        // Swapping tương tác
+        window.switchPalletType = function(type, element) {
+            document.querySelectorAll('.pallet-card').forEach(card => card.classList.remove('active'));
+            element.classList.add('active');
+            loadPalletModel(type);
+        };
+
+        // --- 4. RESIZE & ANIMATION LOOP ---
         window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+            camera.aspect = width / height;
             camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setSize(width, height);
         });
 
         function animate() {
